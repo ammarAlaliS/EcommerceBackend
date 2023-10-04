@@ -14,7 +14,7 @@ const createUser = asyncHandler(async (req, res) => {
   } else {
     // USER ALREADY EXISTS
     throw new Error("User Already Exists");
-  }
+  };
 });
 
 // create Loggin controler
@@ -48,6 +48,7 @@ const updateUser = asyncHandler(async (req, res) => {
         first_name: req.body.first_name,
         last_name: req.body.last_name,
         email: req.body.email,
+        role: req.body.role,
         mobile: req.body.mobile,
       },
       {
