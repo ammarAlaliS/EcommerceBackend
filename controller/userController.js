@@ -1,6 +1,7 @@
 const { generateToken } = require("../config/jwtToken");
 const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
+const { validateMongoDbId } = require("../utilis/validateMongoDb");
 
 // create user controler
 
@@ -41,6 +42,8 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
 
 const updateUser = asyncHandler(async (req, res) => {
   const { _id } = req.user;
+  // execute the validateMongoDbId funtion
+  validateMongoDbId(_id)
   try {
     const updatedUser = await User.findByIdAndUpdate(
       _id,
@@ -80,6 +83,8 @@ const findUser = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
     // console.log(id)
+     // execute the validateMongoDbId funtion
+    validateMongoDbId(_id)
 
     const user = await User.findById(id);
     res.json(user);
@@ -108,6 +113,9 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 const blockUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
+
+   // execute the validateMongoDbId funtion
+   validateMongoDbId(id)
 
   try {
     // Verificar si el usuario existe
@@ -146,6 +154,9 @@ const blockUser = asyncHandler(async (req, res) => {
 
 const unBlockUser = asyncHandler(async(req,res) => {
   const { id } = req.params; 
+
+   // execute the validateMongoDbId funtion
+   validateMongoDbId(id)
   try {
     const unBlock = await User.findByIdAndUpdate(
       id,
