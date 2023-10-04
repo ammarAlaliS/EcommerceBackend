@@ -23,6 +23,10 @@ var userSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
+    isAdmin: {
+        type: String,
+        default: "user"
+    }
 });
 
 //  encrypter password using bcrypt dependency. 
