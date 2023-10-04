@@ -104,6 +104,66 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
+// block a user 
+
+const blockUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Verificar si el usuario existe
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    // Update the isBlokend status to true
+
+    const usuarioBloqueado = await User.findByIdAndUpdate(
+      id,
+      {
+        isBlocked: true,
+      },
+      {
+        new: true,
+      }
+    );
+
+    // send the right response
+    res.status(200).json({
+      message: "User Blocked"
+    });
+  } catch (error) {
+    // Manejar errores
+    console.error(error);
+    res.status(500).json({ error: "Algo salió mal" });
+  }
+});
+
+
+
+
+// unblock a user
+
+const unBlockUser = asyncHandler(async(req,res) => {
+  const { id } = req.params; 
+  try {
+    const unBlock = await User.findByIdAndUpdate(
+      id,
+      {
+        isBlocked:false,
+      },
+      {
+        new: true,
+      }
+    );
+    res.status(200).json({
+      message: "User unBlocked",
+    });
+  } catch (error) {
+    throw new Error(error)
+  }
+})
+
 module.exports = {
   createUser,
   loginUserCtrl,
@@ -111,4 +171,7 @@ module.exports = {
   findUser,
   deleteUser,
   updateUser,
+  blockUser,
+  unBlockUser
+
 };
