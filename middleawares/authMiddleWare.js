@@ -2,6 +2,8 @@ const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler');
 
+// verify the token
+
 const authMiddleware = asyncHandler(async(req,res,next) =>{
     let token; 
     if (req?.headers?.authorization?.startsWith("Bearer")){
@@ -21,4 +23,17 @@ const authMiddleware = asyncHandler(async(req,res,next) =>{
     }
 }); 
 
-module.exports = { authMiddleware };
+// verify is the user role is admin or user.
+
+const isAdmin = asyncHandler(async(req,res,next) => { 
+    const { email } = req.user;
+    const adminUser = await User.findOne({ email });
+
+    if (adminUser.role !== "admin"){
+        throw new Error("you are not an admin")
+    }else{
+        next();
+    }
+
+})
+module.exports = { authMiddleware, isAdmin };
