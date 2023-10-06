@@ -3,6 +3,7 @@ const User = require("../models/userModel");
 const asyncHandler = require("express-async-handler");
 const { validateMongoDbId } = require("../utilis/validateMongoDb");
 const { generateRefreshToken } = require("../config/refreshToken");
+const { isUserDelete } = require("../middleawares/authMiddleWare")
 
 
 // create user controler
@@ -57,6 +58,12 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
   }
 });
 
+// handle refresh token 
+const handleRefreshToken = asyncHandler(async(req, res) => {
+  const cookie = req.cookies;
+  if (!cookie?.refreshToken) throw new Error("Not Refresh Token in Cookies")
+})
+
 // update a user
 
 const updateUser = asyncHandler(async (req, res) => {
@@ -72,6 +79,7 @@ const updateUser = asyncHandler(async (req, res) => {
         email: req.body.email,
         role: req.body.role,
         mobile: req.body.mobile,
+        isDelete: req.body.isDelete,
       },
       {
         new: true,
@@ -97,18 +105,45 @@ const getUsers = asyncHandler(async (req, res) => {
   }
 });
 
+// get delete account 
+
+const getAllDeleteAccount = asyncHandler(async (req, res) => {
+  try {
+      const users = req.usersWithDeletedAccounts;
+      res.json(users);
+  } catch (error) {
+      throw new Error("error");
+  }
+});
+
 // find a sigle user
 const findUser = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
     // console.log(id)
      // execute the validateMongoDbId funtion
-    validateMongoDbId(_id)
+    validateMongoDbId(id)
 
     const user = await User.findById(id);
     res.json(user);
   } catch (error) {
     throw new Error(error);
+  }
+});
+
+//  find deleted accounts
+
+const findDeletedAccounts = asyncHandler(async (req, res)=>{
+  try {
+    const { id } = req.params;
+    // console.log(id)
+     // execute the validateMongoDbId funtion
+    validateMongoDbId(id)
+
+    const user = await User.findById(id);
+    res.json(user);
+  } catch (error) {
+    throw new Error("error");
   }
 });
 
@@ -202,6 +237,9 @@ module.exports = {
   deleteUser,
   updateUser,
   blockUser,
-  unBlockUser
+  unBlockUser,
+  handleRefreshToken,
+  findDeletedAccounts,
+  getAllDeleteAccount
 
 };

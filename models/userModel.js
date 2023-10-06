@@ -23,6 +23,10 @@ var userSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
+    isDelete: {
+        type: String,
+        default: false,
+    },
     role: {
         type: String,
         default: "user"
@@ -40,7 +44,8 @@ var userSchema = new mongoose.Schema({
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
     refreshToken:{
         type:String,
-    }
+    },
+
 
     
 },{
@@ -48,7 +53,10 @@ var userSchema = new mongoose.Schema({
 
 });
 
+// 
+
 //  encrypter password using bcrypt dependency. 
+
 
 userSchema.pre('save',async function(next){
     const salt = bcrypt.genSaltSync(10);
